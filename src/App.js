@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import logo from "./images/shitty_logo.webp";
+import './App.css'
+
+function Header() {
+  const [signedIn, setSignedIn] = useState(false);
+  return (
+    <header>
+      <div>
+        <img className="logo" src={logo} alt="Logo"></img>
+      </div>
+
+      <div>
+        <select>
+          <option>Option 1</option>
+          <option>Option 2</option>
+          <option>Option 3</option>
+          <option>Option 4</option>
+        </select>
+      </div>
+
+      <div>
+        <button>Sign In</button>
+        <button>Register</button>
+      </div>
+    </header>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header></Header>
     </div>
   );
 }
