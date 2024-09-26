@@ -4,12 +4,14 @@ import './App.css'
 function Header() {
   return (
     <header>
-      <div>
-        <img className="logo" src={logo} alt="Logo"></img>
+      <div className="logoContainer">
+        <a href="#">
+          <img className="logo" src={logo} alt="Logo"></img>
+        </a>
       </div>
 
-      <div>
-        <select>
+      <div className="dropdownContainer">
+        <select className="dropdown">
           <option>Option 1</option>
           <option>Option 2</option>
           <option>Option 3</option>
@@ -17,9 +19,13 @@ function Header() {
         </select>
       </div>
 
-      <div>
-        <button>Sign In</button>
-        <button>Register</button>
+      <div className="searchbarContainer">
+        <input className="searchbar" type="text" placeholder="Search assets..." />
+      </div>
+
+      <div className="authButtons">
+        <button className="button">Sign In</button>
+        <button className="button">Register</button>
       </div>
     </header>
   );
@@ -29,15 +35,15 @@ function ThumbnailGrid() {
   return (
     <div className="gridContainer">
       {sampleItems.map((item, idx) => {
-       return ( 
-       <div className="gridItem">
-          <img className="thumbnail" src={item.thumbnail} alt={item.title}/>
+        return (
+          <div className="gridItem">
+            <img className="thumbnail" src={item.thumbnail} alt={item.title} />
 
-          <div>
-            <h4>{item.title}</h4>
-            <p>{item.description}</p>
-          </div>
-        </div> )
+            <div>
+              <h4>{item.title}</h4>
+              <p>{item.description}</p>
+            </div>
+          </div>)
       })}
     </div>
   )
