@@ -1,68 +1,117 @@
 header {
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
 }
 .logoContainer {
-    flex: 1;
+  flex: 1;
 }
 .logo {
-    height: 50px;
-    cursor: pointer;
+  height: 50px;
+  cursor: pointer;
 }
 .dropdownContainer {
-    flex: 1;
-    /* text-align: center; */
+  flex: 1;
+  /* text-align: center; */
 }
 .dropdown {
-    padding: 8px 12px;
-    font-size: 16px;
-    /* padding: auto; */
+  padding: 8px 12px;
+  font-size: 16px;
+  /* padding: auto; */
 }
 .searchbarContainer {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .searchbar {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 .authButtons {
-    flex: 2;
-    text-align: right;
+  flex: 2;
+  text-align: right;
 }
 .button {
-    padding: 10px 15px;
-    margin-left: 10px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 10px 15px;
+  margin-left: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 .gridContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 .gridItem {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
 }
 .thumbnail {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
+}
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 500px;
+  position: relative;
+}
+.closeButton {
+  position: absolute;
+  top: 5%;
+  right: 2%;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.submitButton {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.submitButton:hover {
+  background-color: #45a049;
+}
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
