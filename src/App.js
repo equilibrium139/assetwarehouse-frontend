@@ -1,14 +1,13 @@
 import logo from "./images/shitty_logo.webp";
 import './App.css'
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Canvas, useFrame } from '@react-three/fiber'
 
 function Header({ onLoginClicked, onSignUpClicked }) {
   return (
     <header>
       <div className="logoContainer">
-        <a href="#">
-          <img className="logo" src={logo} alt="Logo"></img>
-        </a>
+        <img className="logo" src={logo} alt="Logo"></img>
       </div>
 
       <div className="dropdownContainer">
@@ -103,14 +102,41 @@ function SignUpForm({ onClose }) {
   )
 }
 
-function ThumbnailGrid() {
+function Box(props) {
+  const meshRef = useRef();
+  // const [hovered, setHovered]
+
+  useFrame((state, delta) => (meshRef.current.rotation.x += delta));
+
+  return (
+    <mesh {...props} ref={meshRef} scale={1}>
+      <boxGeometry args={[1, 1, 1]}></boxGeometry>
+      <meshStandardMaterial color={'hotpink'}></meshStandardMaterial>
+    </mesh >
+  )
+}
+
+function AssetViewer() {
+  return (
+    <div>
+      <h2>Model Viewer</h2>
+      <Canvas>
+        <ambientLight intensity={Math.PI / 2} />
+        {/* <spotLight></spotLight> */}
+        <Box position={[-1.2, 0, 0]}></Box>
+        <Box position={[1.2, 0, 0]}></Box>
+      </Canvas>
+    </div>
+  );
+}
+
+function Gallery({ onThumbnailClicked }) {
   return (
     <div className="gridContainer">
       {sampleItems.map((item, idx) => {
         return (
           <div className="gridItem">
-            <img className="thumbnail" src={item.thumbnail} alt={item.title} />
-
+            <img onClick={onThumbnailClicked} className="thumbnail" src={item.thumbnail} alt={item.title} />
             <div>
               <h4>{item.title}</h4>
               <p>{item.description}</p>
@@ -125,20 +151,25 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
-  const handleLoginClicked = () => {
-    setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
+  function handleLoginClicked() {
     setIsModalOpen(true);
+    setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
   };
 
-  const handleSignUpClicked = () => {
-    setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
+  function handleSignUpClicked() {
     setIsModalOpen(true);
+    setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
   };
+
+  function handleThumbnailClicked() {
+    setIsModalOpen(true);
+    setModalContent(<AssetViewer onClose={() => setIsModalOpen(false)}></AssetViewer>);
+  }
 
   return (
     <div>
       <Header onLoginClicked={handleLoginClicked} onSignUpClicked={handleSignUpClicked} />
-      <ThumbnailGrid />
+      <Gallery onThumbnailClicked={handleThumbnailClicked} />
       {isModalOpen &&
         <Modal onClose={() => setIsModalOpen(false)}>
           {modalContent}
