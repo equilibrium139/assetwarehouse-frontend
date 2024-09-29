@@ -1,7 +1,10 @@
 import logo from "./images/shitty_logo.webp";
-import './App.css'
+import "./App.css";
 import { useState, useRef } from "react";
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+
+interface HeaderProps {}
 
 function Header({ onLoginClicked, onSignUpClicked }) {
   return (
@@ -20,12 +23,20 @@ function Header({ onLoginClicked, onSignUpClicked }) {
       </div>
 
       <div className="searchbarContainer">
-        <input className="searchbar" type="text" placeholder="Search assets..." />
+        <input
+          className="searchbar"
+          type="text"
+          placeholder="Search assets..."
+        />
       </div>
 
       <div className="authButtons">
-        <button className="button" onClick={onLoginClicked}>Login</button>
-        <button className="button" onClick={onSignUpClicked}>Sign up</button>
+        <button className="button" onClick={onLoginClicked}>
+          Login
+        </button>
+        <button className="button" onClick={onSignUpClicked}>
+          Sign up
+        </button>
       </div>
     </header>
   );
@@ -35,22 +46,24 @@ function Modal({ onClose, children }) {
   return (
     <div className="modalOverlay">
       <div className="modalContent">
-        <button className="closeButton" onClick={onClose}>X</button>
+        <button className="closeButton" onClick={onClose}>
+          X
+        </button>
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 function LoginForm({ onClose }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Logged in with:", email, password);
     onClose();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -58,29 +71,40 @@ function LoginForm({ onClose }) {
 
       <label>
         Email:
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required></input>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        ></input>
       </label>
 
       <label>
         Password:
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required></input>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        ></input>
       </label>
 
-      <button className="submitButton" type="submit">Sign In</button>
-
+      <button className="submitButton" type="submit">
+        Sign In
+      </button>
     </form>
-  )
+  );
 }
 
 function SignUpForm({ onClose }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Signed up with: ", email, password);
     onClose();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -88,32 +112,42 @@ function SignUpForm({ onClose }) {
 
       <label>
         Email:
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required></input>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        ></input>
       </label>
 
       <label>
         Password:
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required></input>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        ></input>
       </label>
 
-      <button className="submitButton" type="submit">Sign In</button>
-
+      <button className="submitButton" type="submit">
+        Sign In
+      </button>
     </form>
-  )
+  );
 }
 
 function Box(props) {
-  const meshRef = useRef();
-  // const [hovered, setHovered]
+  const meshRef = useRef<THREE.Mesh>(null!);
 
   useFrame((state, delta) => (meshRef.current.rotation.x += delta));
 
   return (
     <mesh {...props} ref={meshRef} scale={1}>
       <boxGeometry args={[1, 1, 1]}></boxGeometry>
-      <meshStandardMaterial color={'hotpink'}></meshStandardMaterial>
-    </mesh >
-  )
+      <meshStandardMaterial color={"hotpink"}></meshStandardMaterial>
+    </mesh>
+  );
 }
 
 function AssetViewer() {
@@ -136,49 +170,55 @@ function Gallery({ onThumbnailClicked }) {
       {sampleItems.map((item, idx) => {
         return (
           <div className="gridItem">
-            <img onClick={onThumbnailClicked} className="thumbnail" src={item.thumbnail} alt={item.title} />
+            <img
+              onClick={onThumbnailClicked}
+              className="thumbnail"
+              src={item.thumbnail}
+              alt={item.title}
+            />
             <div>
               <h4>{item.title}</h4>
               <p>{item.description}</p>
             </div>
-          </div>)
+          </div>
+        );
       })}
-    </div>
-  )
-}
-
-function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-
-  function handleLoginClicked() {
-    setIsModalOpen(true);
-    setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
-  };
-
-  function handleSignUpClicked() {
-    setIsModalOpen(true);
-    setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
-  };
-
-  function handleThumbnailClicked() {
-    setIsModalOpen(true);
-    setModalContent(<AssetViewer onClose={() => setIsModalOpen(false)}></AssetViewer>);
-  }
-
-  return (
-    <div>
-      <Header onLoginClicked={handleLoginClicked} onSignUpClicked={handleSignUpClicked} />
-      <Gallery onThumbnailClicked={handleThumbnailClicked} />
-      {isModalOpen &&
-        <Modal onClose={() => setIsModalOpen(false)}>
-          {modalContent}
-        </Modal>
-      }
     </div>
   );
 }
 
+function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<JSX.Element>();
+
+  function handleLoginClicked() {
+    setIsModalOpen(true);
+    setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
+  }
+
+  function handleSignUpClicked() {
+    setIsModalOpen(true);
+    setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
+  }
+
+  function handleThumbnailClicked() {
+    setIsModalOpen(true);
+    setModalContent(<AssetViewer />);
+  }
+
+  return (
+    <div>
+      <Header
+        onLoginClicked={handleLoginClicked}
+        onSignUpClicked={handleSignUpClicked}
+      />
+      <Gallery onThumbnailClicked={handleThumbnailClicked} />
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>{modalContent}</Modal>
+      )}
+    </div>
+  );
+}
 
 const sampleItems = [
   {
