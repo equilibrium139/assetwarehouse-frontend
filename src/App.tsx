@@ -44,8 +44,8 @@ function Header({ onLoginClicked, onSignUpClicked }) {
 
 function Modal({ onClose, children }) {
   return (
-    <div className="modalOverlay">
-      <div className="modalContent">
+    <div className="modalOverlay" onClick={onClose}>
+      <div className="modalContent" onClick={(e) => e.stopPropagation()}>
         <button className="closeButton" onClick={onClose}>
           X
         </button>
