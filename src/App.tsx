@@ -1,6 +1,6 @@
 import logo from "./images/shitty_logo.webp";
 import "./App.css";
-import { useState, useRef } from "react";
+import { useState, useRef, CSSProperties } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -42,10 +42,31 @@ function Header({ onLoginClicked, onSignUpClicked }) {
   );
 }
 
-function Modal({ onClose, children }) {
+interface ModalProps {
+  onClose: () => void;
+  width?: string;
+  height?: string;
+  children: React.ReactNode;
+}
+
+function Modal({
+  onClose,
+  width = "500px",
+  height = "300px",
+  children,
+}: ModalProps) {
+  const modalStyle: CSSProperties = {
+    width: width || "500px",
+    height: height || "300px",
+  };
+
   return (
     <div className="modalOverlay" onClick={onClose}>
-      <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modalContent"
+        style={modalStyle}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="closeButton" onClick={onClose}>
           X
         </button>
@@ -144,7 +165,7 @@ function Box(props) {
 
   return (
     <mesh {...props} ref={meshRef} scale={1}>
-      <boxGeometry args={[1, 1, 1]}></boxGeometry>
+      <boxGeometry args={[2, 2, 2]}></boxGeometry>
       <meshStandardMaterial color={"hotpink"}></meshStandardMaterial>
     </mesh>
   );
@@ -152,13 +173,13 @@ function Box(props) {
 
 function AssetViewer() {
   return (
-    <div>
-      <h2>Model Viewer</h2>
+    <div className="canvasContainer">
+      <h2>Model Viewer</h2> {/*replace with asset name */}
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
-        {/* <spotLight></spotLight> */}
-        <Box position={[-1.2, 0, 0]}></Box>
-        <Box position={[1.2, 0, 0]}></Box>
+        <spotLight></spotLight>
+        <Box position={[-1.2, 0.0, 0]}></Box>
+        <Box position={[1.2, 0.0, 0]}></Box>
       </Canvas>
     </div>
   );
@@ -189,21 +210,29 @@ function Gallery({ onThumbnailClicked }) {
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<JSX.Element>();
+  const [modalContent, setModalContent] = useState<React.ReactElement>();
+  const [modalWidth, setModalWidth] = useState<string>("500px");
+  const [modalHeight, setModalHeight] = useState<string>("300px");
 
   function handleLoginClicked() {
     setIsModalOpen(true);
     setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
+    setModalWidth("500px");
+    setModalHeight("300px");
   }
 
   function handleSignUpClicked() {
     setIsModalOpen(true);
     setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
+    setModalWidth("500px");
+    setModalHeight("300px");
   }
 
   function handleThumbnailClicked() {
     setIsModalOpen(true);
     setModalContent(<AssetViewer />);
+    setModalWidth("800px");
+    setModalHeight("600px");
   }
 
   return (
@@ -214,7 +243,13 @@ function App() {
       />
       <Gallery onThumbnailClicked={handleThumbnailClicked} />
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>{modalContent}</Modal>
+        <Modal
+          onClose={() => setIsModalOpen(false)}
+          width={modalWidth}
+          height={modalHeight}
+        >
+          {modalContent}
+        </Modal>
       )}
     </div>
   );
