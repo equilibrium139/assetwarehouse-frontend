@@ -1,7 +1,8 @@
 import logo from "./images/shitty_logo.webp";
 import "./App.css";
 import { useState, useRef, CSSProperties } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import * as THREE from "three";
 
 interface HeaderProps {}
@@ -171,6 +172,14 @@ function Box(props) {
   );
 }
 
+function Teapot() {
+  const teapot = useLoader(
+    OBJLoader,
+    "http://localhost:8080/models/teapot.obj"
+  );
+  return <primitive object={teapot}></primitive>;
+}
+
 function AssetViewer() {
   return (
     <div className="canvasContainer">
@@ -178,8 +187,7 @@ function AssetViewer() {
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight></spotLight>
-        <Box position={[-1.2, 0.0, 0]}></Box>
-        <Box position={[1.2, 0.0, 0]}></Box>
+        <Teapot />
       </Canvas>
     </div>
   );
