@@ -218,29 +218,39 @@ function Gallery({ onThumbnailClicked }) {
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactElement>();
-  const [modalWidth, setModalWidth] = useState<string>("500px");
-  const [modalHeight, setModalHeight] = useState<string>("300px");
+  const [modalProps, setModalProps] = useState<ModalProps>({
+    onClose: () => {},
+    children: null,
+  });
 
   function handleLoginClicked() {
     setIsModalOpen(true);
-    setModalContent(<LoginForm onClose={() => setIsModalOpen(false)} />);
-    setModalWidth("500px");
-    setModalHeight("300px");
+    setModalProps({
+      onClose: () => setIsModalOpen(false),
+      children: <LoginForm onClose={() => setIsModalOpen(false)} />,
+      width: "500px",
+      height: "300px",
+    });
   }
 
   function handleSignUpClicked() {
     setIsModalOpen(true);
-    setModalContent(<SignUpForm onClose={() => setIsModalOpen(false)} />);
-    setModalWidth("500px");
-    setModalHeight("300px");
+    setModalProps({
+      onClose: () => setIsModalOpen(false),
+      children: <SignUpForm onClose={() => setIsModalOpen(false)} />,
+      width: "500px",
+      height: "300px",
+    });
   }
 
   function handleThumbnailClicked() {
     setIsModalOpen(true);
-    setModalContent(<AssetViewer />);
-    setModalWidth("800px");
-    setModalHeight("600px");
+    setModalProps({
+      onClose: () => setIsModalOpen(false),
+      children: <AssetViewer />,
+      width: "800px",
+      height: "600px",
+    });
   }
 
   return (
@@ -250,15 +260,7 @@ function App() {
         onSignUpClicked={handleSignUpClicked}
       />
       <Gallery onThumbnailClicked={handleThumbnailClicked} />
-      {isModalOpen && (
-        <Modal
-          onClose={() => setIsModalOpen(false)}
-          width={modalWidth}
-          height={modalHeight}
-        >
-          {modalContent}
-        </Modal>
-      )}
+      {isModalOpen && <Modal {...modalProps}></Modal>}
     </div>
   );
 }
