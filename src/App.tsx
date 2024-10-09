@@ -1,11 +1,9 @@
 import logo from "./images/shitty_logo.webp";
 import "./App.css";
-import { useState, useRef, CSSProperties } from "react";
+import { useState, useRef, CSSProperties, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import * as THREE from "three";
-
-interface HeaderProps {}
 
 function Header({ onLoginClicked, onSignUpClicked }) {
   return (
@@ -193,21 +191,45 @@ function AssetViewer() {
   );
 }
 
+interface Asset {
+  id: number;
+  name: string;
+  description: string;
+  file_url: string;
+  thumbnail_url: string;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+  tags: string[];
+  is_public: boolean;
+  downloads: number;
+  views: number;
+}
+
 function Gallery({ onThumbnailClicked }) {
+  const [assets, setAssets] = useState<Asset[]>([]);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/assets/popular/100")
+      .then((response) => response.json())
+      .then((json) => setAssets(json));
+  }, []);
+
   return (
     <div className="gridContainer">
-      {sampleItems.map((item, idx) => {
+      {assets.map((asset, idx) => {
         return (
           <div className="gridItem">
             <img
               onClick={onThumbnailClicked}
               className="thumbnail"
-              src={item.thumbnail}
-              alt={item.title}
+              src={
+                "http://localhost:8080/assets/thumbnails/" + asset.thumbnail_url
+              }
+              alt={asset.name}
             />
             <div>
-              <h4>{item.title}</h4>
-              <p>{item.description}</p>
+              <h4>{asset.name}</h4>
+              <p>{asset.description}</p>
             </div>
           </div>
         );
