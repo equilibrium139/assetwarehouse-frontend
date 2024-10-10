@@ -3,6 +3,7 @@ import "./App.css";
 import { useState, useRef, CSSProperties, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
 
 function Header({ onLoginClicked, onSignUpClicked }) {
@@ -164,28 +165,41 @@ function Box(props) {
 
   return (
     <mesh {...props} ref={meshRef} scale={1}>
-      <boxGeometry args={[2, 2, 2]}></boxGeometry>
+      <boxGeometry args={[1, 1, 1]}></boxGeometry>
       <meshStandardMaterial color={"hotpink"}></meshStandardMaterial>
     </mesh>
   );
 }
 
-function Teapot() {
-  const teapot = useLoader(
-    OBJLoader,
-    "http://localhost:8080/models/teapot.obj"
+function Model(props: { url: string }) {
+  console.log(props.url);
+  let loader;
+  if (props.url.endsWith(".obj")) {
+    loader = OBJLoader;
+  } else if (props.url.endsWith(".glb")) {
+    loader = GLTFLoader;
+  } else {
+    throw new Error("Unsupported 3D file type");
+  }
+  const model = useLoader(loader, props.url);
+  return (
+    <primitive
+      object={loader == GLTFLoader ? model.scene : model}
+      scale={[1, 1, 1]}
+    ></primitive>
   );
-  return <primitive object={teapot}></primitive>;
 }
 
-function AssetViewer() {
+function AssetViewer(props: { asset: Asset }) {
   return (
     <div className="canvasContainer">
-      <h2>Model Viewer</h2> {/*replace with asset name */}
+      <h2>{props.asset.name}</h2> {/*replace with asset name */}
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight></spotLight>
-        <Teapot />
+        <Model
+          url={"http://localhost:8080/assets/models/" + props.asset.file_url}
+        />
       </Canvas>
     </div>
   );
@@ -209,7 +223,7 @@ interface Asset {
 function Gallery({ onThumbnailClicked }) {
   const [assets, setAssets] = useState<Asset[]>([]);
   useEffect(() => {
-    fetch("http://localhost:8080/api/assets/popular/100")
+    fetch("http://localhost:8080/api/assets/popular/10")
       .then((response) => response.json())
       .then((json) => setAssets(json));
   }, []);
@@ -220,7 +234,7 @@ function Gallery({ onThumbnailClicked }) {
         return (
           <div className="gridItem">
             <img
-              onClick={onThumbnailClicked}
+              onClick={() => onThumbnailClicked(asset)}
               className="thumbnail"
               src={
                 "http://localhost:8080/assets/thumbnails/" + asset.thumbnail_url
@@ -265,11 +279,11 @@ function App() {
     });
   }
 
-  function handleThumbnailClicked() {
+  function handleThumbnailClicked(assetClicked: Asset) {
     setIsModalOpen(true);
     setModalProps({
       onClose: () => setIsModalOpen(false),
-      children: <AssetViewer />,
+      children: <AssetViewer asset={assetClicked} />,
       width: "800px",
       height: "600px",
     });
