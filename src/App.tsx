@@ -6,7 +6,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
 
-function Header({ onLoginClicked, onSignUpClicked }) {
+function Header({ onUploadClicked, onLoginClicked, onSignUpClicked }) {
   return (
     <header>
       <div className="logoContainer">
@@ -31,6 +31,9 @@ function Header({ onLoginClicked, onSignUpClicked }) {
       </div>
 
       <div className="authButtons">
+        <button className="button" onClick={onUploadClicked}>
+          Upload
+        </button>
         <button className="button" onClick={onLoginClicked}>
           Login
         </button>
@@ -158,6 +161,55 @@ function SignUpForm({ onClose }) {
   );
 }
 
+function UploadForm({ onClose }) {
+  function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const url = "http://localhost:8080/api/assets/upload";
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to upload model");
+        }
+        return response.json();
+      })
+      .then((json) => console.log(json));
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Upload Asset</h2>
+
+      <label>
+        Name:
+        <input type="text" name="name" required></input>
+      </label>
+
+      <label>
+        Description:
+        <input type="text" name="description" required></input>
+      </label>
+
+      <label>
+        Thumbnail:
+        <input type="file" name="thumbnail" accept="image/*" required></input>
+      </label>
+
+      <label>
+        Asset:
+        <input type="file" name="asset" accept=".glb, .obj" required></input>
+      </label>
+
+      <button className="submitButton" type="submit">
+        Upload
+      </button>
+    </form>
+  );
+}
+
 function Box(props) {
   const meshRef = useRef<THREE.Mesh>(null!);
 
@@ -184,7 +236,7 @@ function Model(props: { url: string }) {
   const model = useLoader(loader, props.url);
   return (
     <primitive
-      object={loader == GLTFLoader ? model.scene : model}
+      object={loader === GLTFLoader ? model.scene : model}
       scale={[1, 1, 1]}
     ></primitive>
   );
@@ -193,7 +245,7 @@ function Model(props: { url: string }) {
 function AssetViewer(props: { asset: Asset }) {
   return (
     <div className="canvasContainer">
-      <h2>{props.asset.name}</h2> {/*replace with asset name */}
+      <h2>{props.asset.name}</h2>
       <Canvas>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight></spotLight>
@@ -232,7 +284,7 @@ function Gallery({ onThumbnailClicked }) {
     <div className="gridContainer">
       {assets.map((asset, idx) => {
         return (
-          <div className="gridItem">
+          <div className="gridItem" key={asset.id}>
             <img
               onClick={() => onThumbnailClicked(asset)}
               className="thumbnail"
@@ -258,6 +310,16 @@ function App() {
     onClose: () => {},
     children: null,
   });
+
+  function handleUploadClicked() {
+    setIsModalOpen(true);
+    setModalProps({
+      onClose: () => setIsModalOpen(false),
+      children: <UploadForm onClose={() => setIsModalOpen(false)} />,
+      width: "800px",
+      height: "600px",
+    });
+  }
 
   function handleLoginClicked() {
     setIsModalOpen(true);
@@ -292,6 +354,7 @@ function App() {
   return (
     <div>
       <Header
+        onUploadClicked={handleUploadClicked}
         onLoginClicked={handleLoginClicked}
         onSignUpClicked={handleSignUpClicked}
       />

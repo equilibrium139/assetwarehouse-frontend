@@ -108,6 +108,9 @@ header {
   background-color: #45a049;
 }
 input[type="email"],
+input[type="text"],
+input[type="image"],
+input[type="file"],
 input[type="password"] {
   width: 100%;
   padding: 12px 20px;
