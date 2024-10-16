@@ -6,7 +6,25 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
 
-function Header({ onUploadClicked, onLoginClicked, onSignUpClicked }) {
+interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
+interface HeaderProps {
+  user: User | undefined;
+  onUploadClicked: () => void;
+  onLoginClicked: () => void;
+  onSignupClicked: () => void;
+}
+
+function Header({
+  user,
+  onUploadClicked,
+  onLoginClicked,
+  onSignupClicked,
+}: HeaderProps) {
   return (
     <header>
       <div className="logoContainer">
@@ -31,15 +49,20 @@ function Header({ onUploadClicked, onLoginClicked, onSignUpClicked }) {
       </div>
 
       <div className="authButtons">
-        <button className="button" onClick={onUploadClicked}>
-          Upload
-        </button>
-        <button className="button" onClick={onLoginClicked}>
-          Login
-        </button>
-        <button className="button" onClick={onSignUpClicked}>
-          Sign up
-        </button>
+        {user ? (
+          <button className="button" onClick={onUploadClicked}>
+            Upload
+          </button>
+        ) : (
+          <>
+            <button className="button" onClick={onLoginClicked}>
+              Login
+            </button>
+            <button className="button" onClick={onSignupClicked}>
+              Sign up
+            </button>
+          </>
+        )}
       </div>
     </header>
   );
@@ -120,42 +143,52 @@ function LoginForm({ onClose }) {
   );
 }
 
-function SignUpForm({ onClose }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Signed up with: ", email, password);
+function SignUpForm({ onClose, setUser }) {
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch("http://localhost:8080/signup", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: formData.get("username"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+    if (!response.ok) {
+      console.log("Error creating account: ", response.status);
+    } else {
+      const json: User = await response.json();
+      setUser(json);
+    }
     onClose();
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Sign up</h2>
 
       <label>
+        Username:
+        <input type="text" name="username" required></input>
+      </label>
+
+      <label>
         Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        ></input>
+        <input type="email" name="email" required></input>
       </label>
 
       <label>
         Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        ></input>
+        <input type="password" name="password" required></input>
       </label>
 
       <button className="submitButton" type="submit">
-        Sign In
+        Sign Up
       </button>
     </form>
   );
@@ -177,6 +210,7 @@ function UploadForm({ onClose }) {
         return response.json();
       })
       .then((json) => console.log(json));
+    onClose();
   }
 
   return (
@@ -236,6 +270,7 @@ function Model(props: { url: string }) {
   const model = useLoader(loader, props.url);
   return (
     <primitive
+      name={"Model"}
       object={loader === GLTFLoader ? model.scene : model}
       scale={[1, 1, 1]}
     ></primitive>
@@ -246,7 +281,13 @@ function AssetViewer(props: { asset: Asset }) {
   return (
     <div className="canvasContainer">
       <h2>{props.asset.name}</h2>
-      <Canvas>
+      <Canvas
+        onCreated={(state) => {
+          let modelWorldVec = new THREE.Vector3();
+          state.scene.getObjectByName("Model")?.getWorldPosition(modelWorldVec);
+          state.camera.lookAt(modelWorldVec);
+        }}
+      >
         <ambientLight intensity={Math.PI / 2} />
         <spotLight></spotLight>
         <Model
@@ -305,11 +346,27 @@ function Gallery({ onThumbnailClicked }) {
 }
 
 function App() {
+  const [user, setUser] = useState<User>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalProps, setModalProps] = useState<ModalProps>({
     onClose: () => {},
     children: null,
   });
+
+  useEffect(() => {
+    if (!user) {
+      fetch("http://localhost:8080/login", {
+        method: "POST",
+        credentials: "include",
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((json) => {
+          setUser(json);
+        });
+    }
+  }, []);
 
   function handleUploadClicked() {
     setIsModalOpen(true);
@@ -326,8 +383,8 @@ function App() {
     setModalProps({
       onClose: () => setIsModalOpen(false),
       children: <LoginForm onClose={() => setIsModalOpen(false)} />,
-      width: "500px",
-      height: "300px",
+      width: "600px",
+      height: "400px",
     });
   }
 
@@ -335,9 +392,11 @@ function App() {
     setIsModalOpen(true);
     setModalProps({
       onClose: () => setIsModalOpen(false),
-      children: <SignUpForm onClose={() => setIsModalOpen(false)} />,
-      width: "500px",
-      height: "300px",
+      children: (
+        <SignUpForm onClose={() => setIsModalOpen(false)} setUser={setUser} />
+      ),
+      width: "600px",
+      height: "400px",
     });
   }
 
@@ -354,107 +413,15 @@ function App() {
   return (
     <div>
       <Header
+        user={user}
         onUploadClicked={handleUploadClicked}
         onLoginClicked={handleLoginClicked}
-        onSignUpClicked={handleSignUpClicked}
+        onSignupClicked={handleSignUpClicked}
       />
       <Gallery onThumbnailClicked={handleThumbnailClicked} />
       {isModalOpen && <Modal {...modalProps}></Modal>}
     </div>
   );
 }
-
-const sampleItems = [
-  {
-    thumbnail: "thumbnail1.jpg",
-    title: "Asset 1",
-    description: "Description of Asset 1",
-  },
-  {
-    thumbnail: "thumbnail2.jpg",
-    title: "Asset 2",
-    description: "Description of Asset 2",
-  },
-  {
-    thumbnail: "thumbnail3.jfif",
-    title: "Asset 3",
-    description: "Description of Asset 3",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-  {
-    thumbnail: "thumbnail4.jfif",
-    title: "Asset 4",
-    description: "Description of Asset 4",
-  },
-];
 
 export default App;
