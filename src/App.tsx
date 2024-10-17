@@ -50,9 +50,12 @@ function Header({
 
       <div className="authButtons">
         {user ? (
-          <button className="button" onClick={onUploadClicked}>
-            Upload
-          </button>
+          <>
+            <p>{user.username}</p>
+            <button className="button" onClick={onUploadClicked}>
+              Upload
+            </button>
+          </>
         ) : (
           <>
             <button className="button" onClick={onLoginClicked}>
@@ -204,6 +207,7 @@ function UploadForm({ onClose }) {
     const formData = new FormData(event.currentTarget);
     const url = "http://localhost:8080/api/assets/upload";
     fetch(url, {
+      credentials: "include",
       method: "POST",
       body: formData,
     })
@@ -375,6 +379,7 @@ function App() {
   }, []);
 
   function handleUploadClicked() {
+    console.assert(user, "User must be logged in for upload form to appear");
     setIsModalOpen(true);
     setModalProps({
       onClose: () => setIsModalOpen(false),
