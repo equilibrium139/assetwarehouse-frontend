@@ -102,15 +102,29 @@ function Modal({
   );
 }
 
-function LoginForm({ onClose }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Logged in with:", email, password);
+function LoginForm({ onClose, setUser }) {
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch("http://localhost:8080/login", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+    if (!response.ok) {
+      console.log("Error logging in: ", response.status);
+    } else {
+      const json: User = await response.json();
+      setUser(json);
+    }
     onClose();
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -118,22 +132,12 @@ function LoginForm({ onClose }) {
 
       <label>
         Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        ></input>
+        <input type="email" name="email" required></input>
       </label>
 
       <label>
         Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        ></input>
+        <input type="password" name="password" required></input>
       </label>
 
       <button className="submitButton" type="submit">
@@ -195,7 +199,7 @@ function SignUpForm({ onClose, setUser }) {
 }
 
 function UploadForm({ onClose }) {
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const url = "http://localhost:8080/api/assets/upload";
@@ -354,17 +358,19 @@ function App() {
   });
 
   useEffect(() => {
-    if (!user) {
-      fetch("http://localhost:8080/login", {
+    async function tryLoginWithSession() {
+      const response = await fetch("http://localhost:8080/login", {
         method: "POST",
         credentials: "include",
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .then((json) => {
-          setUser(json);
-        });
+      });
+      if (response.ok) {
+        const json = await response.json();
+        setUser(json);
+      }
+    }
+
+    if (!user) {
+      tryLoginWithSession();
     }
   }, []);
 
@@ -382,7 +388,9 @@ function App() {
     setIsModalOpen(true);
     setModalProps({
       onClose: () => setIsModalOpen(false),
-      children: <LoginForm onClose={() => setIsModalOpen(false)} />,
+      children: (
+        <LoginForm onClose={() => setIsModalOpen(false)} setUser={setUser} />
+      ),
       width: "600px",
       height: "400px",
     });
