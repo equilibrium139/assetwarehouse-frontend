@@ -316,9 +316,14 @@ interface Asset {
   created_at: string;
   updated_at: string;
   tags: string[];
-  is_public: boolean;
   downloads: number;
   views: number;
+  username: string;
+}
+
+function FormatTimestampTZ(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString();
 }
 
 function Gallery({ onThumbnailClicked }) {
@@ -326,7 +331,9 @@ function Gallery({ onThumbnailClicked }) {
   useEffect(() => {
     fetch("http://localhost:8080/api/assets/popular/10")
       .then((response) => response.json())
-      .then((json) => setAssets(json));
+      .then((json) => {
+        setAssets(json);
+      });
   }, []);
 
   return (
@@ -345,6 +352,10 @@ function Gallery({ onThumbnailClicked }) {
             <div>
               <h4>{asset.name}</h4>
               <p>{asset.description}</p>
+              <p>{asset.username}</p>
+              <p>Views: {asset.views}</p>
+              <p>Downloads: {asset.downloads}</p>
+              <p>Created {FormatTimestampTZ(asset.created_at)}</p>
             </div>
           </div>
         );
