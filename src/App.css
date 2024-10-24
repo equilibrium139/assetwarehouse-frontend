@@ -124,3 +124,22 @@ input[type="password"] {
   flex-direction: column;
   height: 100%;
 }
+.profilePictureContainer {
+  display: inline-block;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.profilePicture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+}
