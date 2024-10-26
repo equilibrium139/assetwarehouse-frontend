@@ -3,6 +3,7 @@ import { Asset } from "./types";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import CameraController from "./CameraController";
 
 function Model(props: { url: string }) {
   console.log(props.url);
@@ -15,13 +16,7 @@ function Model(props: { url: string }) {
     throw new Error("Unsupported 3D file type");
   }
   const model = useLoader(loader, props.url);
-  return (
-    <primitive
-      name={"Model"}
-      object={loader === GLTFLoader ? model.scene : model}
-      scale={[1, 1, 1]}
-    ></primitive>
-  );
+  return <primitive name={"Model"} object={loader === GLTFLoader ? model.scene : model} scale={[1, 1, 1]}></primitive>;
 }
 
 function AssetViewer(props: { asset: Asset }) {
@@ -36,10 +31,9 @@ function AssetViewer(props: { asset: Asset }) {
         }}
       >
         <ambientLight intensity={Math.PI / 2} />
-        <spotLight></spotLight>
-        <Model
-          url={"http://localhost:8080/assets/models/" + props.asset.file_url}
-        />
+        <spotLight position={[10, 15, 10]} angle={0.3} />
+        <Model url={"http://localhost:8080/assets/models/" + props.asset.file_url} />
+        <CameraController />
       </Canvas>
     </div>
   );
