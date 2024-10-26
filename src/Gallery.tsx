@@ -33,15 +33,21 @@ function Gallery({
               alt={asset.name}
             />
             <div>
-              {asset.created_by === user?.id && (
-                <button onClick={() => onEditClicked(idx)}>Edit</button>
-              )}
               <h4>{asset.name}</h4>
               <p>{asset.description}</p>
               <p>{asset.username}</p>
               <p>Views: {asset.views}</p>
               <p>Downloads: {asset.downloads}</p>
               <p>Created {FormatTimestampTZ(asset.created_at)}</p>
+              {asset.created_by === user?.id && (
+                <button onClick={() => onEditClicked(idx)}>Edit</button>
+              )}
+              <a
+                href={"http://localhost:8080/assets/models/" + asset.file_url}
+                download
+              >
+                <button>Download</button>
+              </a>
             </div>
           </div>
         );
