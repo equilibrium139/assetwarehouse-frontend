@@ -13,11 +13,7 @@ function App() {
     children: null,
   });
 
-  function openModal(
-    children: React.ReactNode,
-    width?: string,
-    height?: string
-  ) {
+  function openModal(children: React.ReactNode, width?: string, height?: string) {
     console.assert(!isModalOpen, "Calling openModal when modal already open");
 
     const modalProps = {
@@ -55,32 +51,9 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <HomePage
-              openModal={openModal}
-              closeModal={closeModal}
-              user={user}
-              setUser={setUser}
-            />
-          }
-        ></Route>
+        <Route path="/" element={<HomePage openModal={openModal} closeModal={closeModal} user={user} setUser={setUser} />}></Route>
         // TODO: direct to signin page for pages that require logged in user
-        <Route
-          path="/profile"
-          element={
-            user ? (
-              <ProfilePage
-                openModal={openModal}
-                closeModal={closeModal}
-                user={user}
-              />
-            ) : (
-              <h1>Not logged in</h1>
-            )
-          }
-        ></Route>
+        <Route path="/profile" element={user ? <ProfilePage openModal={openModal} closeModal={closeModal} user={user} /> : <h1>Not logged in</h1>}></Route>
       </Routes>
       {isModalOpen && <Modal {...modalProps} />}
     </div>

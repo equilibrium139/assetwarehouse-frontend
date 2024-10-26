@@ -11,11 +11,7 @@ import "./App.css";
 import EditForm from "./EditForm";
 
 interface HomePageProps {
-  openModal: (
-    children: React.ReactNode,
-    width?: string,
-    height?: string
-  ) => void;
+  openModal: (children: React.ReactNode, width?: string, height?: string) => void;
   closeModal: () => void;
   user: User | undefined;
   setUser: (user: User) => void;
@@ -26,9 +22,7 @@ function HomePage({ openModal, closeModal, user, setUser }: HomePageProps) {
 
   useEffect(() => {
     async function loadPopularAssets() {
-      const response = await fetch(
-        "http://localhost:8080/api/assets/popular/10"
-      );
+      const response = await fetch("http://localhost:8080/api/assets/popular/10");
       if (!response.ok) {
         throw new Error("HTTP error! Status: ${response.status}");
       }
@@ -44,19 +38,11 @@ function HomePage({ openModal, closeModal, user, setUser }: HomePageProps) {
   }
 
   function handleLoginClicked() {
-    openModal(
-      <LoginForm onClose={closeModal} setUser={setUser} />,
-      "600px",
-      "400px"
-    );
+    openModal(<LoginForm onClose={closeModal} setUser={setUser} />, "600px", "400px");
   }
 
   function handleSignUpClicked() {
-    openModal(
-      <SignUpForm onClose={closeModal} setUser={setUser} />,
-      "600px",
-      "400px"
-    );
+    openModal(<SignUpForm onClose={closeModal} setUser={setUser} />, "600px", "400px");
   }
 
   function handleThumbnailClicked(assetClicked: Asset) {
@@ -64,34 +50,13 @@ function HomePage({ openModal, closeModal, user, setUser }: HomePageProps) {
   }
 
   function handleEditClicked(assetClickedIdx: number) {
-    openModal(
-      <EditForm
-        onClose={closeModal}
-        assetIdx={assetClickedIdx}
-        assets={galleryAssets!}
-        setAssets={setGalleryAssets}
-      />,
-      "600px",
-      "400px"
-    );
+    openModal(<EditForm onClose={closeModal} assetIdx={assetClickedIdx} assets={galleryAssets!} setAssets={setGalleryAssets} />, "600px", "400px");
   }
 
   return (
     <div>
-      <Header
-        user={user}
-        onUploadClicked={handleUploadClicked}
-        onLoginClicked={handleLoginClicked}
-        onSignupClicked={handleSignUpClicked}
-      />
-      {galleryAssets && (
-        <Gallery
-          onThumbnailClicked={handleThumbnailClicked}
-          onEditClicked={handleEditClicked}
-          assets={galleryAssets}
-          user={user}
-        />
-      )}
+      <Header user={user} onUploadClicked={handleUploadClicked} onLoginClicked={handleLoginClicked} onSignupClicked={handleSignUpClicked} />
+      {galleryAssets && <Gallery onThumbnailClicked={handleThumbnailClicked} onEditClicked={handleEditClicked} assets={galleryAssets} user={user} />}
     </div>
   );
 }

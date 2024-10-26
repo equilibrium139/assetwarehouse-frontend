@@ -9,12 +9,7 @@ interface HeaderProps {
   onSignupClicked: () => void;
 }
 
-function Header({
-  user,
-  onUploadClicked,
-  onLoginClicked,
-  onSignupClicked,
-}: HeaderProps) {
+function Header({ user, onUploadClicked, onLoginClicked, onSignupClicked }: HeaderProps) {
   return (
     <header>
       <div className="logoContainer">
@@ -31,11 +26,7 @@ function Header({
       </div>
 
       <div className="searchbarContainer">
-        <input
-          className="searchbar"
-          type="text"
-          placeholder="Search assets..."
-        />
+        <input className="searchbar" type="text" placeholder="Search assets..." />
       </div>
 
       <div className="authButtons">
@@ -46,9 +37,7 @@ function Header({
             </button>
             <div className="profilePictureContainer">
               <Link to="/profile">
-                <div className="profilePicture">
-                  {user.username.charAt(0).toUpperCase()}
-                </div>
+                <div className="profilePicture">{user.username.charAt(0).toUpperCase()}</div>
               </Link>
             </div>
           </div>

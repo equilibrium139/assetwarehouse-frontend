@@ -6,11 +6,7 @@ import AssetViewer from "./AssetViewer";
 import EditForm from "./EditForm";
 
 interface ProfilePageProps {
-  openModal: (
-    children: React.ReactNode,
-    width?: string,
-    height?: string
-  ) => void;
+  openModal: (children: React.ReactNode, width?: string, height?: string) => void;
   closeModal: () => void;
   user: User;
 }
@@ -44,25 +40,13 @@ function ProfilePage({ openModal, closeModal, user }: ProfilePageProps) {
   }
 
   function handleEditClicked(assetClickedIdx: number) {
-    openModal(
-      <EditForm
-        onClose={closeModal}
-        assetIdx={assetClickedIdx}
-        assets={userAssets!}
-        setAssets={setUserAssets}
-      />
-    );
+    openModal(<EditForm onClose={closeModal} assetIdx={assetClickedIdx} assets={userAssets!} setAssets={setUserAssets} />);
   }
 
   return (
     <div>
       <h1>{user.username}</h1>
-      <Gallery
-        onThumbnailClicked={handleThumbnailClicked}
-        onEditClicked={handleEditClicked}
-        assets={userAssets}
-        user={user}
-      ></Gallery>
+      <Gallery onThumbnailClicked={handleThumbnailClicked} onEditClicked={handleEditClicked} assets={userAssets} user={user}></Gallery>
     </div>
   );
 }

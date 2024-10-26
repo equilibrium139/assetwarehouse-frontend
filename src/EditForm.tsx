@@ -19,11 +19,7 @@ function EditForm({ onClose, assetIdx, assets, setAssets }: EditFormProps) {
       body: formData,
     });
     if (!response.ok) {
-      console.log(
-        "Error updating asset: ",
-        response.status,
-        response.statusText
-      );
+      console.log("Error updating asset: ", response.status, response.statusText);
     } else {
       setAssets(
         assets.map((asset, idx) => {
@@ -48,22 +44,12 @@ function EditForm({ onClose, assetIdx, assets, setAssets }: EditFormProps) {
 
       <label>
         Name:
-        <input
-          type="text"
-          name="name"
-          defaultValue={assets[assetIdx].name}
-          required
-        ></input>
+        <input type="text" name="name" defaultValue={assets[assetIdx].name} required></input>
       </label>
 
       <label>
         Description:
-        <input
-          type="text"
-          name="description"
-          defaultValue={assets[assetIdx].description}
-          required
-        ></input>
+        <input type="text" name="description" defaultValue={assets[assetIdx].description} required></input>
       </label>
 
       <button className="submitButton" type="submit">
