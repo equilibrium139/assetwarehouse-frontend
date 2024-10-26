@@ -8,6 +8,7 @@ import Gallery from "./Gallery";
 import Header from "./Header";
 import Modal, { ModalProps } from "./Modal";
 import "./App.css";
+import EditForm from "./EditForm";
 
 interface HomePageProps {
   openModal: (
@@ -62,6 +63,19 @@ function HomePage({ openModal, closeModal, user, setUser }: HomePageProps) {
     openModal(<AssetViewer asset={assetClicked} />, "800px", "600px");
   }
 
+  function handleEditClicked(assetClickedIdx: number) {
+    openModal(
+      <EditForm
+        onClose={closeModal}
+        assetIdx={assetClickedIdx}
+        assets={galleryAssets!}
+        setAssets={setGalleryAssets}
+      />,
+      "600px",
+      "400px"
+    );
+  }
+
   return (
     <div>
       <Header
@@ -73,7 +87,9 @@ function HomePage({ openModal, closeModal, user, setUser }: HomePageProps) {
       {galleryAssets && (
         <Gallery
           onThumbnailClicked={handleThumbnailClicked}
+          onEditClicked={handleEditClicked}
           assets={galleryAssets}
+          user={user}
         />
       )}
     </div>

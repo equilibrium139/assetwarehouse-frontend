@@ -3,6 +3,7 @@ import { User, Asset } from "./types";
 import Gallery from "./Gallery";
 import "./App.css";
 import AssetViewer from "./AssetViewer";
+import EditForm from "./EditForm";
 
 interface ProfilePageProps {
   openModal: (
@@ -42,12 +43,25 @@ function ProfilePage({ openModal, closeModal, user }: ProfilePageProps) {
     openModal(<AssetViewer asset={assetClicked} />, "800px", "600px");
   }
 
+  function handleEditClicked(assetClickedIdx: number) {
+    openModal(
+      <EditForm
+        onClose={closeModal}
+        assetIdx={assetClickedIdx}
+        assets={userAssets!}
+        setAssets={setUserAssets}
+      />
+    );
+  }
+
   return (
     <div>
       <h1>{user.username}</h1>
       <Gallery
         onThumbnailClicked={handleThumbnailClicked}
+        onEditClicked={handleEditClicked}
         assets={userAssets}
+        user={user}
       ></Gallery>
     </div>
   );

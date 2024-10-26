@@ -1,4 +1,4 @@
-import { Asset } from "./types";
+import { Asset, User } from "./types";
 import "./App.css";
 
 function FormatTimestampTZ(timestamp) {
@@ -8,10 +8,17 @@ function FormatTimestampTZ(timestamp) {
 
 interface GalleryProps {
   onThumbnailClicked: (asset: Asset) => void;
+  onEditClicked: (assetIdx: number) => void;
   assets: Asset[];
+  user?: User;
 }
 
-function Gallery({ onThumbnailClicked, assets }: GalleryProps) {
+function Gallery({
+  onThumbnailClicked,
+  onEditClicked,
+  assets,
+  user,
+}: GalleryProps) {
   return (
     <div className="gridContainer">
       {assets.map((asset, idx) => {
@@ -26,6 +33,9 @@ function Gallery({ onThumbnailClicked, assets }: GalleryProps) {
               alt={asset.name}
             />
             <div>
+              {asset.created_by === user?.id && (
+                <button onClick={() => onEditClicked(idx)}>Edit</button>
+              )}
               <h4>{asset.name}</h4>
               <p>{asset.description}</p>
               <p>{asset.username}</p>
