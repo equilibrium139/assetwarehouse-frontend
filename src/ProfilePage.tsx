@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { User, Asset } from "./types";
 import Gallery from "./Gallery";
 import "./App.css";
-import AssetViewer from "./AssetViewer";
-import EditForm from "./EditForm";
 
 interface ProfilePageProps {
   openModal: (children: React.ReactNode, width?: string, height?: string) => void;
@@ -21,7 +19,7 @@ function ProfilePage({ openModal, closeModal, user }: ProfilePageProps) {
         credentials: "include",
       });
       if (!response.ok) {
-        throw new Error("HTTP error! Status: ${response.status}");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const assets = await response.json();
@@ -31,22 +29,14 @@ function ProfilePage({ openModal, closeModal, user }: ProfilePageProps) {
     try {
       fetchUserAssets();
     } catch (error) {
-      console.log("Error fetching user assets: ${error}");
+      console.log(`Error fetching user assets: ${error}`);
     }
   }, []);
-
-  function handleThumbnailClicked(assetClicked: Asset) {
-    openModal(<AssetViewer asset={assetClicked} />, "800px", "600px");
-  }
-
-  function handleEditClicked(assetClickedIdx: number) {
-    openModal(<EditForm onClose={closeModal} assetIdx={assetClickedIdx} assets={userAssets!} setAssets={setUserAssets} />);
-  }
 
   return (
     <div>
       <h1>{user.username}</h1>
-      <Gallery onThumbnailClicked={handleThumbnailClicked} onEditClicked={handleEditClicked} assets={userAssets} user={user}></Gallery>
+      <Gallery openModal={openModal} closeModal={closeModal} assets={userAssets} setAssets={setUserAssets} user={user}></Gallery>
     </div>
   );
 }

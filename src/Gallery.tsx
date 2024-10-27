@@ -1,5 +1,7 @@
 import { Asset, User } from "./types";
 import "./App.css";
+import AssetViewer from "./AssetViewer";
+import EditForm from "./EditForm";
 
 function FormatTimestampTZ(timestamp) {
   const date = new Date(timestamp);
@@ -7,19 +9,28 @@ function FormatTimestampTZ(timestamp) {
 }
 
 interface GalleryProps {
-  onThumbnailClicked: (asset: Asset) => void;
-  onEditClicked: (assetIdx: number) => void;
+  openModal: (children: React.ReactNode, width?: string, height?: string) => void;
+  closeModal: () => void;
   assets: Asset[];
+  setAssets: (assets: Asset[]) => void;
   user?: User;
 }
 
-function Gallery({ onThumbnailClicked, onEditClicked, assets, user }: GalleryProps) {
+function Gallery({ openModal, closeModal, assets, setAssets, user }: GalleryProps) {
+  function handleThumbnailClicked(assetClicked: Asset) {
+    openModal(<AssetViewer asset={assetClicked} />, "800px", "600px");
+  }
+
+  function handleEditClicked(assetClickedIdx: number) {
+    openModal(<EditForm onClose={closeModal} assetIdx={assetClickedIdx} assets={assets!} setAssets={setAssets} />, "600px", "400px");
+  }
+
   return (
     <div className="gridContainer">
       {assets.map((asset, idx) => {
         return (
           <div className="gridItem" key={asset.id}>
-            <img onClick={() => onThumbnailClicked(asset)} className="thumbnail" src={"http://localhost:8080/assets/thumbnails/" + asset.thumbnail_url} alt={asset.name} />
+            <img onClick={() => handleThumbnailClicked(asset)} className="thumbnail" src={"http://localhost:8080/assets/thumbnails/" + asset.thumbnail_url} alt={asset.name} />
             <div>
               <h4>{asset.name}</h4>
               <p>{asset.description}</p>
@@ -27,7 +38,7 @@ function Gallery({ onThumbnailClicked, onEditClicked, assets, user }: GalleryPro
               <p>Views: {asset.views}</p>
               <p>Downloads: {asset.downloads}</p>
               <p>Created {FormatTimestampTZ(asset.created_at)}</p>
-              {asset.created_by === user?.id && <button onClick={() => onEditClicked(idx)}>Edit</button>}
+              {asset.created_by === user?.id && <button onClick={() => handleEditClicked(idx)}>Edit</button>}
               <a href={"http://localhost:8080/assets/models/" + asset.file_url} download>
                 <button>Download</button>
               </a>

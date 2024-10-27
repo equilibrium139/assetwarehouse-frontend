@@ -4,6 +4,7 @@ import ProfilePage from "./ProfilePage";
 import { User } from "./types";
 import { useEffect, useState } from "react";
 import Modal, { ModalProps } from "./Modal";
+import Header from "./Header";
 
 function App() {
   const [user, setUser] = useState<User>();
@@ -50,9 +51,10 @@ function App() {
 
   return (
     <div>
+      <Header user={user} setUser={setUser} openModal={openModal} closeModal={closeModal}></Header>
       <Routes>
-        <Route path="/" element={<HomePage openModal={openModal} closeModal={closeModal} user={user} setUser={setUser} />}></Route>
-        // TODO: direct to signin page for pages that require logged in user
+        <Route path="/" element={<HomePage openModal={openModal} closeModal={closeModal} user={user} />}></Route>
+        {/* TODO: direct to signin page for pages that require logged in user */}
         <Route path="/profile" element={user ? <ProfilePage openModal={openModal} closeModal={closeModal} user={user} /> : <h1>Not logged in</h1>}></Route>
       </Routes>
       {isModalOpen && <Modal {...modalProps} />}

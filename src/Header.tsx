@@ -1,15 +1,31 @@
 import { User } from "./types";
 import logo from "./images/shitty_logo.webp";
 import { Link } from "react-router-dom";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignupForm";
+import UploadForm from "./UploadForm";
 
 interface HeaderProps {
   user: User | undefined;
-  onUploadClicked: () => void;
-  onLoginClicked: () => void;
-  onSignupClicked: () => void;
+  setUser: (user: User) => void;
+  openModal: (children: React.ReactNode, width?: string, height?: string) => void;
+  closeModal: () => void;
 }
 
-function Header({ user, onUploadClicked, onLoginClicked, onSignupClicked }: HeaderProps) {
+function Header({ user, setUser, openModal, closeModal }: HeaderProps) {
+  function handleUploadClicked() {
+    console.assert(user, "User must be logged in for upload form to appear");
+    openModal(<UploadForm onClose={closeModal} />, "800px", "600px");
+  }
+
+  function handleLoginClicked() {
+    openModal(<LoginForm onClose={closeModal} setUser={setUser} />, "600px", "400px");
+  }
+
+  function handleSignUpClicked() {
+    openModal(<SignUpForm onClose={closeModal} setUser={setUser} />, "600px", "400px");
+  }
+
   return (
     <header>
       <div className="logoContainer">
@@ -32,7 +48,7 @@ function Header({ user, onUploadClicked, onLoginClicked, onSignupClicked }: Head
       <div className="authButtons">
         {user ? (
           <div className="loggedInSection">
-            <button className="button" onClick={onUploadClicked}>
+            <button className="button" onClick={handleUploadClicked}>
               Upload
             </button>
             <div className="profilePictureContainer">
@@ -43,10 +59,10 @@ function Header({ user, onUploadClicked, onLoginClicked, onSignupClicked }: Head
           </div>
         ) : (
           <>
-            <button className="button" onClick={onLoginClicked}>
+            <button className="button" onClick={handleLoginClicked}>
               Login
             </button>
-            <button className="button" onClick={onSignupClicked}>
+            <button className="button" onClick={handleSignUpClicked}>
               Sign up
             </button>
           </>
