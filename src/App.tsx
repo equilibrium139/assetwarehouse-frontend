@@ -5,6 +5,7 @@ import { User } from "./types";
 import { useEffect, useState } from "react";
 import Modal, { ModalProps } from "./Modal";
 import Header from "./Header";
+import SearchPage from "./SearchPage";
 
 function App() {
   const [user, setUser] = useState<User>();
@@ -56,6 +57,7 @@ function App() {
         <Route path="/" element={<HomePage openModal={openModal} closeModal={closeModal} user={user} />}></Route>
         {/* TODO: direct to signin page for pages that require logged in user */}
         <Route path="/profile" element={user ? <ProfilePage openModal={openModal} closeModal={closeModal} user={user} /> : <h1>Not logged in</h1>}></Route>
+        <Route path="/search" element={<SearchPage openModal={openModal} closeModal={closeModal} user={user} />} />
       </Routes>
       {isModalOpen && <Modal {...modalProps} />}
     </div>

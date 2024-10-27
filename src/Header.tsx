@@ -1,6 +1,6 @@
 import { User } from "./types";
 import logo from "./images/shitty_logo.webp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignupForm";
 import UploadForm from "./UploadForm";
@@ -13,6 +13,8 @@ interface HeaderProps {
 }
 
 function Header({ user, setUser, openModal, closeModal }: HeaderProps) {
+  const navigate = useNavigate();
+
   function handleUploadClicked() {
     console.assert(user, "User must be logged in for upload form to appear");
     openModal(<UploadForm onClose={closeModal} />, "800px", "600px");
@@ -24,6 +26,12 @@ function Header({ user, setUser, openModal, closeModal }: HeaderProps) {
 
   function handleSignUpClicked() {
     openModal(<SignUpForm onClose={closeModal} setUser={setUser} />, "600px", "400px");
+  }
+
+  function handleSearch(event) {
+    event.preventDefault();
+    const query = event.target.search.value;
+    navigate(`/search?query=${encodeURIComponent(query)}`);
   }
 
   return (
@@ -42,7 +50,9 @@ function Header({ user, setUser, openModal, closeModal }: HeaderProps) {
       </div>
 
       <div className="searchbarContainer">
-        <input className="searchbar" type="text" placeholder="Search assets..." />
+        <form style={{ width: "100%" }} onSubmit={handleSearch}>
+          <input className="searchbar" type="text" name="search" placeholder="Search assets..." />
+        </form>
       </div>
 
       <div className="authButtons">

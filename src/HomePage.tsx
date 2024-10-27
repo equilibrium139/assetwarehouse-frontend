@@ -10,7 +10,7 @@ interface HomePageProps {
 }
 
 function HomePage({ openModal, closeModal, user }: HomePageProps) {
-  const [assets, setAssets] = useState<Asset[]>();
+  const [assets, setAssets] = useState<Asset[]>([]);
 
   useEffect(() => {
     async function loadPopularAssets() {
