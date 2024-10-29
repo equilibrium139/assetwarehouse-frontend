@@ -14,12 +14,13 @@ function HomePage({ openModal, closeModal, user }: HomePageProps) {
 
   useEffect(() => {
     async function loadPopularAssets() {
-      const response = await fetch("http://localhost:8080/api/assets/popular/10");
+      const response = await fetch("http://localhost:8080/api/assets/popular/10", { credentials: "include" });
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        console.log(`HTTP error! Status: ${response.status}`);
+      } else {
+        const assets = await response.json();
+        setAssets(assets);
       }
-      const assets = await response.json();
-      setAssets(assets);
     }
     loadPopularAssets();
   }, []);

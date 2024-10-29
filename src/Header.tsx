@@ -31,13 +31,17 @@ function Header({ user, setUser, openModal, closeModal }: HeaderProps) {
   function handleSearch(event) {
     event.preventDefault();
     const query = event.target.search.value;
-    navigate(`/search?query=${encodeURIComponent(query)}`);
+    if (query.length > 0) {
+      navigate(`/search?query=${encodeURIComponent(query)}`);
+    }
   }
 
   return (
     <header>
       <div className="logoContainer">
-        <img className="logo" src={logo} alt="Logo"></img>
+        <Link to="/">
+          <img className="logo" src={logo} alt="Logo"></img>
+        </Link>
       </div>
 
       <div className="dropdownContainer">
