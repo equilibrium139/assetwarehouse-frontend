@@ -30,7 +30,12 @@ function Gallery({ openModal, closeModal, assets, setAssets, user }: GalleryProp
       {assets.map((asset, idx) => {
         return (
           <div className="gridItem" key={asset.id}>
-            <img onClick={() => handleThumbnailClicked(asset)} className="thumbnail" src={process.env.API_URL + "/assets/thumbnails/" + asset.thumbnail_url} alt={asset.name} />
+            <img
+              onClick={() => handleThumbnailClicked(asset)}
+              className="thumbnail"
+              src={process.env.REACT_APP_API_URL + "/assets/thumbnails/" + asset.thumbnail_url}
+              alt={asset.name}
+            />
             <div>
               <h4>{asset.name}</h4>
               <p>{asset.description}</p>
@@ -39,7 +44,7 @@ function Gallery({ openModal, closeModal, assets, setAssets, user }: GalleryProp
               <p>Downloads: {asset.downloads}</p>
               <p>Created {FormatTimestampTZ(asset.created_at)}</p>
               {asset.created_by === user?.id && <button onClick={() => handleEditClicked(idx)}>Edit</button>}
-              <a href={process.env.API_URL + "/assets/models/" + asset.file_url} download>
+              <a href={process.env.REACT_APP_API_URL + "/assets/models/" + asset.file_url} download>
                 <button>Download</button>
               </a>
             </div>

@@ -4,7 +4,7 @@ function SignUpForm({ onClose, setUser }) {
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const response = await fetch(process.env.API_URL + "/signup", {
+    const response = await fetch(process.env.REACT_APP_API_URL + "/signup", {
       method: "POST",
       credentials: "include",
       headers: {

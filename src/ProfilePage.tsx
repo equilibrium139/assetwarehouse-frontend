@@ -15,7 +15,7 @@ function ProfilePage({ openModal, closeModal, user }: ProfilePageProps) {
 
   useEffect(() => {
     async function fetchUserAssets() {
-      const response = await fetch(process.env.API_URL + "/api/user/assets", {
+      const response = await fetch(process.env.REACT_APP_API_URL + "/api/user/assets", {
         credentials: "include",
       });
       if (!response.ok) {
