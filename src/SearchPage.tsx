@@ -19,7 +19,7 @@ function SearchPage({ openModal, closeModal, user }: SearchPageProps) {
 
   useEffect(() => {
     async function loadSearchResults() {
-      const response = await fetch(`http://localhost:8080/api/search?query=${query}`, { credentials: "include" });
+      const response = await fetch(process.env.API_URL + `/api/search?query=${query}`, { credentials: "include" });
       if (!response.ok) {
         console.log(`HTTP error! Status: ${response.status}`);
       } else {

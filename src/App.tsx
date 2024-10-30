@@ -35,7 +35,7 @@ function App() {
 
   useEffect(() => {
     async function tryLoginWithSession() {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch(process.env.API_URL + "/login", {
         method: "POST",
         credentials: "include",
       });

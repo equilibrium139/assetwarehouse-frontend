@@ -14,7 +14,7 @@ function HomePage({ openModal, closeModal, user }: HomePageProps) {
 
   useEffect(() => {
     async function loadPopularAssets() {
-      const response = await fetch("http://localhost:8080/api/assets/popular/10", { credentials: "include" });
+      const response = await fetch(process.env.API_URL + "/api/assets/popular/10", { credentials: "include" });
       if (!response.ok) {
         console.log(`HTTP error! Status: ${response.status}`);
       } else {

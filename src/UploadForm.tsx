@@ -2,7 +2,7 @@ function UploadForm({ onClose }) {
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const url = "http://localhost:8080/api/assets/upload";
+    const url = process.env.API_URL + "/api/assets/upload";
     fetch(url, {
       credentials: "include",
       method: "POST",

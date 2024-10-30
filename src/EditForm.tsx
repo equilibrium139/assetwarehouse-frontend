@@ -12,7 +12,7 @@ function EditForm({ onClose, assetIdx, assets, setAssets }: EditFormProps) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const assetID = assets[assetIdx].id;
-    const url = "http://localhost:8080/api/assets/" + assetID;
+    const url = process.env.API_URL + "/api/assets/" + assetID;
     const response = await fetch(url, {
       credentials: "include",
       method: "PUT",

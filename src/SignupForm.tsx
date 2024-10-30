@@ -4,7 +4,7 @@ function SignUpForm({ onClose, setUser }) {
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const response = await fetch("http://localhost:8080/signup", {
+    const response = await fetch(process.env.API_URL + "/signup", {
       method: "POST",
       credentials: "include",
       headers: {
