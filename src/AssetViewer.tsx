@@ -32,7 +32,7 @@ function AssetViewer(props: { asset: Asset }) {
       >
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 15, 10]} angle={0.3} />
-        <Model url={process.env.REACT_APP_API_URL + "/assets/models/" + props.asset.file_url} />
+        <Model url={process.env.REACT_APP_SPACES_URL + "/assets/" + props.asset.created_by + "/" + props.asset.file_url} />
         <CameraController />
       </Canvas>
     </div>

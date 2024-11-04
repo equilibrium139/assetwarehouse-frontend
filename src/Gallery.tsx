@@ -33,7 +33,7 @@ function Gallery({ openModal, closeModal, assets, setAssets, user }: GalleryProp
             <img
               onClick={() => handleThumbnailClicked(asset)}
               className="thumbnail"
-              src={process.env.REACT_APP_API_URL + "/assets/thumbnails/" + asset.thumbnail_url}
+              src={process.env.REACT_APP_SPACES_URL + "/thumbnails/" + asset.created_by + "/" + asset.thumbnail_url}
               alt={asset.name}
             />
             <div>
@@ -44,7 +44,7 @@ function Gallery({ openModal, closeModal, assets, setAssets, user }: GalleryProp
               <p>Downloads: {asset.downloads}</p>
               <p>Created {FormatTimestampTZ(asset.created_at)}</p>
               {asset.created_by === user?.id && <button onClick={() => handleEditClicked(idx)}>Edit</button>}
-              <a href={process.env.REACT_APP_API_URL + "/assets/models/" + asset.file_url} download>
+              <a href={process.env.REACT_APP_SPACES_URL + "/assets/" + asset.created_by + "/" + asset.file_url} download>
                 <button>Download</button>
               </a>
             </div>
